@@ -19,6 +19,8 @@ extensions = ['sphinxcontrib.httpdomain']
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
+master_doc = 'index'
+
 language = 'ja'
 
 # -- Options for HTML output -------------------------------------------------
