@@ -1,0 +1,10 @@
+.DS_Store
+
+_build/
+.vscode/
+
+.python-version
+.tool-versions
+
+.venv/
+Pipfile*
