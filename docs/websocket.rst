@@ -23,31 +23,31 @@ WebSocket (API Gateway)
 *URL*
 ^^^^^
 
-- When stage name of deployment is "dev"
+- When stage name of deployment is "**dev**"
 
-See ``soshinkiWebIfWebSocketUrl`` in https://github.com/questar-ac/aws_soshinki-backend/tree/main/cdk-outputs.dev.json
+See ``soshinkiWebIfWebSocketUrl`` in https://github.com/questar-ac/aws_soshinki-backend/blob/main/cdk/cdk-outputs.dev.json
 
-- When stage name of deployment is "prod"
+- When stage name of deployment is "**prod**"
 
-See ``soshinkiWebIfWebSocketUrl`` in https://github.com/questar-ac/aws_soshinki-backend/tree/main/cdk-outputs.prod.json
+See ``soshinkiWebIfWebSocketUrl`` in https://github.com/questar-ac/aws_soshinki-backend/blob/main/cdk/cdk-outputs.prod.json
 
 *Routes*
 ^^^^^^^^
 
-- $connect
+- **$connect**
 
 | クライアントが本WebSocketへ接続したとき、生成されたコネンションIDを記憶する
 | When a client connects to this WebSocket, the generated connection ID is stored.
 
-- $disconnect
+- **$disconnect**
 
 | クライアントが本WebSocketから切断したとき、記憶済みのコネンションIDを削除する
-| Delete the stored connection ID when the client disconnects from this WebSocket
+| Delete the stored connection ID when the client disconnects from this WebSocket.
 
-- $default
+- **$default**
 
-| IoT Topics 経由で受信したイベントメッセージを、 `PostToConnectionCommand [< ApiGatewayManagementApiClient] <https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/apigatewaymanagementapi/command/PostToConnectionCommand/>`_ によってコネクション・クライントへ転送する
-| Forward event messages received via the `IoT Topics <https://omoikane-fw.readthedocs.io/ja/latest/interface.html#iot-topics>`_ to the client connected by calling `[< ApiGatewayManagementApiClient] <https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/apigatewaymanagementapi/command/PostToConnectionCommand/>`_.
+| `IoT Topics <https://omoikane-fw.readthedocs.io/ja/latest/interface.html#iot-topics>`_ 経由で受信したイベントメッセージを、 `PostToConnectionCommand[< ApiGatewayManagementApiClient] <https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/apigatewaymanagementapi/command/PostToConnectionCommand/>`_ によってコネクション・クライントへ転送する
+| Forward event messages received via the `IoT Topics <https://omoikane-fw.readthedocs.io/ja/latest/interface.html#iot-topics>`_ to the client connected by calling `PostToConnectionCommand[< ApiGatewayManagementApiClient] <https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/apigatewaymanagementapi/command/PostToConnectionCommand/>`_.
 
 *Message format*
 ^^^^^^^^^^^^^^^^
@@ -86,8 +86,8 @@ See ``soshinkiWebIfWebSocketUrl`` in https://github.com/questar-ac/aws_soshinki-
     
     ``<event>`` = `weather1/data_sum <https://omoikane-fw.readthedocs.io/ja/latest/iot_topic_messages.html#weather1-data-sum>`_
 
-*Sample codes of client*
-^^^^^^^^^^^^^^^^^^^^^^^^
+*Sample code of client*
+^^^^^^^^^^^^^^^^^^^^^^^
 
 Python
 ``````
