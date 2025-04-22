@@ -4,7 +4,7 @@
 WebSocket
 =========
 
-| アプリケーションが端末からのリアルタイム計測データを受け取るためのWebSocketが用意されています。
+| 端末からのリアルタイム計測データをアプリケーションが受け取るためのWebSocketが用意されています。
 | 本WebSocketは、バックエンドへの接続口であると同時に、端末から送信されるIoT Topic `data_sum <https://omoikane-fw.readthedocs.io/ja/latest/iot_topic_messages.html#section-iottopicmessages-datasum>`_ メッセージをアプリケーションへ転送する中継者としても機能します。
 
 | We provide WebSocket for application to receive realtime measurement data that the terminal transmits.
@@ -23,11 +23,11 @@ WebSocket (API Gateway)
 *URL*
 ^^^^^
 
-- When stage name of deployment is "**dev**"
+- When stage name of the deployment is "**dev**"
 
 See ``soshinkiWebIfWebSocketUrl`` in https://github.com/questar-ac/aws_soshinki-backend/blob/main/cdk/cdk-outputs.dev.json
 
-- When stage name of deployment is "**prod**"
+- When stage name of the deployment is "**prod**"
 
 See ``soshinkiWebIfWebSocketUrl`` in https://github.com/questar-ac/aws_soshinki-backend/blob/main/cdk/cdk-outputs.prod.json
 
@@ -57,7 +57,7 @@ See ``soshinkiWebIfWebSocketUrl`` in https://github.com/questar-ac/aws_soshinki-
 *Content of evnet*
 ^^^^^^^^^^^^^^^^^^
 
-- IoT Topic ``'aws/questar/soshinki/noise/data_sum'`` 経由
+- IoT Topic (``event._context.topic``) == ``'aws/questar/soshinki/noise/data_sum'``
 
   * リオン [RION] NL-42A
     
@@ -70,7 +70,7 @@ See ``soshinkiWebIfWebSocketUrl`` in https://github.com/questar-ac/aws_soshinki-
     
     ``<event>`` = `noise4/data_sum <https://omoikane-fw.readthedocs.io/ja/latest/iot_topic_messages.html#noise4-data-sum>`_
 
-- IoT Topic ``'aws/questar/soshinki/vibration/data_sum'`` 経由
+- IoT Topic (``event._context.topic``) == ``'aws/questar/soshinki/vibration/data_sum'``
 
   * リオン [RION] VM-55
     
@@ -80,7 +80,7 @@ See ``soshinkiWebIfWebSocketUrl`` in https://github.com/questar-ac/aws_soshinki-
     
     ``<event>`` = `vibration4/data_sum <https://omoikane-fw.readthedocs.io/ja/latest/iot_topic_messages.html#vibration4-data-sum>`_
 
-- IoT Topic ``'aws/questar/soshinki/weather/data_sum'`` 経由
+- IoT Topic (``event._context.topic``) == ``'aws/questar/soshinki/weather/data_sum'``
 
   * misol Weather Station WH24C
     
@@ -100,7 +100,7 @@ Python
     ws_url = "<soshinkiWebIfWebSocketUrl>"
     
     def handle_event_data(data):
-        print("IoT Topic event: ", json.dumps(data, indent=2))
+        print("IoT Topic message: ", data)
         #
         # Some processes to handle the event data
         #
@@ -157,28 +157,29 @@ JavaScript
     });
     
     function handleEventData(data) {
-        console.log("IoT Topic message: " JSON.stringify(data, null, 2));
+        console.log("IoT Topic message: ", data);
     
-        const { device_data_type, data_sum } = data.message;
+        const { device_data_type, data_sum, _context } = data.message;
     
-        const deviceType = device_data_type.split('/')[0];
-        const deviceCat = deviceType.match(/noise|vibration|weather/);
+        const iotTopic = _context.topic.split('/');
     
-        if (deviceCat.includes('noise')) {
-            console.log (`Noise level [${data_sum.timestamp}] = ${data_sum.noise_latest}`);
+        if (iotTopic.includes('noise')) {
+            console.log(`Noise level [${data_sum.timestamp}] = ${data_sum.noise_latest}`);
             //
             // Some processes to visualize the noise data
             //
-        } else if (deviceCat.includes('vibration')) {
-            console.log (`Vibration level [${data_sum.timestamp}] = ${data_sum.vibration_latest}`);
+        } else if (iotTopic.includes('vibration')) {
+            console.log(`Vibration level [${data_sum.timestamp}] = ${data_sum.vibration_latest}`);
             //
             // Some processes to visualize the vibration data
             //
-        } else if (deviceCat.includes('weather')) {
-            console.log (`Temperature [${data_sum.timestamp}] = ${data_sum.temperature_latest}`);
-            console.log (`Humidity [${data_sum.timestamp}] = ${data_sum.humidity_latest}`);
+        } else if (iotTopic.includes('weather')) {
+            console.log(`Temperature [${data_sum.timestamp}] = ${data_sum.temperature_latest}`);
+            console.log(`Humidity [${data_sum.timestamp}] = ${data_sum.humidity_latest}`);
             //
             // Some processes to visualize the weather data
             //
+        } else {
+            console.error(`Unimplemented event.device_data_type: ${device_data_type}`);
         }
     }

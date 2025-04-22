@@ -25,11 +25,11 @@ HTTP (Lambda Function URLs)
 *URL*
 ^^^^^
 
-- When stage name of deployment  is "**dev**"
+- When stage name of the deployment is "**dev**"
 
 See ``IoTRetrieverFunctionUrl`` in https://github.com/questar-ac/aws_soshinki-backend/blob/main/cdk/cdk-outputs.dev.json
 
-- When stage name of deployment is "**prod**"
+- When stage name of the deployment is "**prod**"
 
 See ``IoTRetrieverFunctionUrl`` in https://github.com/questar-ac/aws_soshinki-backend/blob/main/cdk/cdk-outputs.prod.json
 
