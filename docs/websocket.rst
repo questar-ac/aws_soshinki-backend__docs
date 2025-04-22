@@ -57,7 +57,7 @@ See ``soshinkiWebIfWebSocketUrl`` in https://github.com/questar-ac/aws_soshinki-
 *Content of evnet*
 ^^^^^^^^^^^^^^^^^^
 
-- IoT Topic (``event._context.topic``) == ``'aws/questar/soshinki/noise/data_sum'``
+- IoT Topic ``'aws/questar/soshinki/noise/data_sum'`` 経由
 
   * リオン [RION] NL-42A
     
@@ -70,7 +70,7 @@ See ``soshinkiWebIfWebSocketUrl`` in https://github.com/questar-ac/aws_soshinki-
     
     ``<event>`` = `noise4/data_sum <https://omoikane-fw.readthedocs.io/ja/latest/iot_topic_messages.html#noise4-data-sum>`_
 
-- IoT Topic (``event._context.topic``) == ``'aws/questar/soshinki/vibration/data_sum'``
+- IoT Topic ``'aws/questar/soshinki/vibration/data_sum'`` 経由
 
   * リオン [RION] VM-55
     
@@ -80,7 +80,7 @@ See ``soshinkiWebIfWebSocketUrl`` in https://github.com/questar-ac/aws_soshinki-
     
     ``<event>`` = `vibration4/data_sum <https://omoikane-fw.readthedocs.io/ja/latest/iot_topic_messages.html#vibration4-data-sum>`_
 
-- IoT Topic (``event._context.topic``) == ``'aws/questar/soshinki/weather/data_sum'``
+- IoT Topic ``'aws/questar/soshinki/weather/data_sum'`` 経由
 
   * misol Weather Station WH24C
     
@@ -152,14 +152,33 @@ JavaScript
     
     socket.addEventListener('message', (event) => {
         console.log("WebSocket message: ", event.data);
-        const eventData = JSON.parse(event.data);
-        handleEventData(eventData);
+        const payload = JSON.parse(event.data);
+        handleEventData(payload);
     });
-
+    
     function handleEventData(data) {
-        console.log("IoT Topic event: " JSON.stringify(data, null, 2));
-        //
-        // Some processes to handle the event data
-        //
+        console.log("IoT Topic message: " JSON.stringify(data, null, 2));
+    
+        const { device_data_type, data_sum } = data.message;
+    
+        const deviceType = device_data_type.split('/')[0];
+        const deviceCat = deviceType.match(/noise|vibration|weather/);
+    
+        if (deviceCat.includes('noise')) {
+            console.log (`Noise level [${data_sum.timestamp}] = ${data_sum.noise_latest}`);
+            //
+            // Some processes to visualize the noise data
+            //
+        } else if (deviceCat.includes('vibration')) {
+            console.log (`Vibration level [${data_sum.timestamp}] = ${data_sum.vibration_latest}`);
+            //
+            // Some processes to visualize the vibration data
+            //
+        } else if (deviceCat.includes('weather')) {
+            console.log (`Temperature [${data_sum.timestamp}] = ${data_sum.temperature_latest}`);
+            console.log (`Humidity [${data_sum.timestamp}] = ${data_sum.humidity_latest}`);
+            //
+            // Some processes to visualize the weather data
+            //
+        }
     }
-
