@@ -4,11 +4,11 @@
 WebSocket
 =========
 
-| 端末からのリアルタイム計測データをアプリケーションが受け取るためのWebSocketが用意されています。
+| 端末からのリアルタイム計測データをアプリケーションが受け取るためのWebSocketを用意しています。
 | 本WebSocketは、バックエンドへの接続口であると同時に、端末から送信されるIoT Topic `data_sum <https://omoikane-fw.readthedocs.io/ja/latest/iot_topic_messages.html#section-iottopicmessages-datasum>`_ メッセージをアプリケーションへ転送する中継者としても機能します。
 
-| We provide WebSocket for application to receive realtime measurement data that the terminal transmits.
-| This WebSocket not only serves as a connection port to the backend, but also works as a relay function for IoT Topic `data_sum <https://omoikane-fw.readthedocs.io/ja/latest/iot_topic_messages.html#section-iottopicmessages-datasum>`_ messages from the terminal to be transferred to application.
+| We provide a WebSocket for an application to receive realtime measurement data that the terminals transmit.
+| This WebSocket not only serves as a connection port to the backend, but also works as a relay function for IoT Topic `data_sum <https://omoikane-fw.readthedocs.io/ja/latest/iot_topic_messages.html#section-iottopicmessages-datasum>`_ messages from the terminals to be transferred to an application.
 
 .. _section-websocket-soshinkiwebsocket:
 
@@ -18,7 +18,7 @@ soshinkiWebIfWebSocket
 *API Type*
 ^^^^^^^^^^
 
-WebSocket (API Gateway)
+WebSocket (AWS API Gateway)
 
 *URL*
 ^^^^^
@@ -49,13 +49,13 @@ See ``soshinkiWebIfWebSocketUrl`` in https://github.com/questar-ac/aws_soshinki-
 | `IoT Topics <https://omoikane-fw.readthedocs.io/ja/latest/interface.html#iot-topics>`_ 経由で受信したイベントメッセージを、 `PostToConnectionCommand[< ApiGatewayManagementApiClient] <https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/apigatewaymanagementapi/command/PostToConnectionCommand/>`_ によってコネクション・クライントへ転送する
 | Forward event messages received via the `IoT Topics <https://omoikane-fw.readthedocs.io/ja/latest/interface.html#iot-topics>`_ to the client connected by calling `PostToConnectionCommand[< ApiGatewayManagementApiClient] <https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/apigatewaymanagementapi/command/PostToConnectionCommand/>`_.
 
-*Message format*
+*Message Format*
 ^^^^^^^^^^^^^^^^
 
 ``{ "message": <event> }``
 
-*Content of evnet*
-^^^^^^^^^^^^^^^^^^
+*Evenet Content*
+^^^^^^^^^^^^^^^^
 
 - IoT Topic (``event._context.topic``) == ``'aws/questar/soshinki/noise/data_sum'``
 
@@ -86,8 +86,79 @@ See ``soshinkiWebIfWebSocketUrl`` in https://github.com/questar-ac/aws_soshinki-
     
     ``<event>`` = `weather1/data_sum <https://omoikane-fw.readthedocs.io/ja/latest/iot_topic_messages.html#weather1-data-sum>`_
 
-*Sample code of client*
-^^^^^^^^^^^^^^^^^^^^^^^
+*Client Sample Code*
+^^^^^^^^^^^^^^^^^^^^
+
+JavaScript
+``````````
+.. code-block:: javascript
+
+    const ws_url = "<soshinkiWebIfWebSocketUrl>"
+    
+    const socket = new WebSocket(ws_url)
+    
+    socket.addEventListener('open', (event) => {
+        console.log("WebSocket is connected.")
+    });
+    
+    socket.addEventListener('close', (event) => {
+        console.log("WebSocket is disconnected.")
+    });
+    
+    socket.addEventListener('error', (event) => {
+        console.log("WebSocket error: ", event);
+    });
+    
+    socket.addEventListener('message', (event) => {
+        console.log("WebSocket message: ", event.data);
+        const payload = JSON.parse(event.data);
+        handleEventData(payload);
+    });
+    
+    function handleEventData(data) {
+        console.log("IoT Topic message: ", data);
+    
+        const { device_data_type, data_sum, _context } = data.message;
+    
+        const iotTopic = _context.topic.split('/');    
+        if (iotTopic.includes('noise')) {
+            const dateTime = toLocaleDateTimeString(data_sum.timestamp);
+            console.log(`[${dateTime}] Noise level = ${data_sum.noise_latest}`);
+            //
+            // Some processes to visualize the noise data
+            //
+        } else if (iotTopic.includes('vibration')) {
+            const dateTime = toLocaleDateTimeString(data_sum.timestamp);
+            console.log(`[${dateTime}] Vibration level = ${data_sum.vibration_latest}`);
+            //
+            // Some processes to visualize the vibration data
+            //
+        } else if (iotTopic.includes('weather')) {
+            const dateTime = toLocaleDateTimeString(data_sum.timestamp);
+            console.log(`[${dateTime}] Temperature = ${data_sum.temperature_latest}`);
+            console.log(`[${dateTime}] Humidity = ${data_sum.humidity_latest}`);
+            console.log(`[${dateTime}] Wind speed = ${data_sum.wind_speed_latest}`);
+            console.log(`[${dateTime}] Wind gust Speed = ${data_sum.gust_speed_latest}`);
+            console.log(`[${dateTime}] Wind direction = ${data_sum.wind_direction_latest}`);
+            console.log(`[${dateTime}] Accumulation rainfall = ${data_sum.accumulation_rainfall_latest}`);
+            console.log(`[${dateTime}] UV index = ${data_sum.uv_latest}`);
+            console.log(`[${dateTime}] Light illuminance = ${data_sum.light_latest}`);
+            //
+            // Some processes to visualize the weather data
+            //
+        } else {
+            console.error(`Unimplemented event.device_data_type: ${device_data_type}`);
+        }
+    }
+    
+    function toLocaleDateTimeString(timestamp) {
+        const date = new Date(timestamp);
+        return [
+            date.getFullYear(),
+            date.getMonth() + 1,
+            date.getDate()
+        ].join( '/' ) + ' ' + date.toLocaleTimeString();
+    }
 
 Python
 ``````
@@ -129,57 +200,3 @@ Python
         )
     
         ws.run_forever()
-
-JavaScript
-``````````
-.. code-block:: javascript
-
-    const ws_url = "<soshinkiWebIfWebSocketUrl>"
-    
-    const socket = new WebSocket(ws_url)
-    
-    socket.addEventListener('open', (event) => {
-        console.log("WebSocket is connected.")
-    });
-    
-    socket.addEventListener('close', (event) => {
-        console.log("WebSocket is disconnected.")
-    });
-    
-    socket.addEventListener('error', (event) => {
-        console.log("WebSocket error: ", event);
-    });
-    
-    socket.addEventListener('message', (event) => {
-        console.log("WebSocket message: ", event.data);
-        const payload = JSON.parse(event.data);
-        handleEventData(payload);
-    });
-    
-    function handleEventData(data) {
-        console.log("IoT Topic message: ", data);
-    
-        const { device_data_type, data_sum, _context } = data.message;
-    
-        const iotTopic = _context.topic.split('/');
-    
-        if (iotTopic.includes('noise')) {
-            console.log(`Noise level [${data_sum.timestamp}] = ${data_sum.noise_latest}`);
-            //
-            // Some processes to visualize the noise data
-            //
-        } else if (iotTopic.includes('vibration')) {
-            console.log(`Vibration level [${data_sum.timestamp}] = ${data_sum.vibration_latest}`);
-            //
-            // Some processes to visualize the vibration data
-            //
-        } else if (iotTopic.includes('weather')) {
-            console.log(`Temperature [${data_sum.timestamp}] = ${data_sum.temperature_latest}`);
-            console.log(`Humidity [${data_sum.timestamp}] = ${data_sum.humidity_latest}`);
-            //
-            // Some processes to visualize the weather data
-            //
-        } else {
-            console.error(`Unimplemented event.device_data_type: ${device_data_type}`);
-        }
-    }

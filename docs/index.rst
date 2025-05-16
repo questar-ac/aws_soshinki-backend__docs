@@ -23,8 +23,8 @@ Contents
     ./resources
 
 .. toctree::
-    :maxdepth: 2
-    :caption: WebApp interface
+    :maxdepth: 4
+    :caption: Web interface
 
     ./websocket
     ./httpapi
