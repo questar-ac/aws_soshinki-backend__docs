@@ -10,7 +10,7 @@ HTTP API
 
 | We provide a HTTP REST API for an application to retrieve past measurement data stored.
 | We implement another Lambda function, IoTReceiverFunction, which continues to receive and store measurement data in IoT Topic `data_chunk <https://omoikane-fw.readthedocs.io/ja/latest/iot_topic_messages.html#section-iottopicmessages-datachunk>`_ messages from the terminals to Timestream DB.
-| This HTTP API will create a query command to measurement data on Timestream DB from the caller's parameters, execute it and return its result as a response to the caller.
+| This HTTP API will create a query command to measurement data on Timestream DB from the API request parameters, execute it and return its result as a response to the API caller.
 
 .. _section-httpapi-iotretrieverfunction:
 
