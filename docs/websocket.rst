@@ -18,7 +18,7 @@ soshinkiWebIfWebSocket
 *API Type*
 ^^^^^^^^^^
 
-WebSocket (AWS API Gateway)
+WebSocket (Implemented by AWS API Gateway)
 
 *URL*
 ^^^^^
@@ -125,13 +125,13 @@ JavaScript
             const dateTime = toLocaleDateTimeString(data_sum.timestamp);
             console.log(`[${dateTime}] Noise level = ${data_sum.noise_latest}`);
             //
-            // Some processes to visualize the noise data
+            // Some processes to visualize the noise measured data
             //
         } else if (iotTopic.includes('vibration')) {
             const dateTime = toLocaleDateTimeString(data_sum.timestamp);
             console.log(`[${dateTime}] Vibration level = ${data_sum.vibration_latest}`);
             //
-            // Some processes to visualize the vibration data
+            // Some processes to visualize the vibration measured data
             //
         } else if (iotTopic.includes('weather')) {
             const dateTime = toLocaleDateTimeString(data_sum.timestamp);
@@ -144,7 +144,7 @@ JavaScript
             console.log(`[${dateTime}] UV index = ${data_sum.uv_latest}`);
             console.log(`[${dateTime}] Light illuminance = ${data_sum.light_latest}`);
             //
-            // Some processes to visualize the weather data
+            // Some processes to visualize the weather measured data
             //
         } else {
             console.error(`Unimplemented event.device_data_type: ${device_data_type}`);

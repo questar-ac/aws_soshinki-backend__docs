@@ -77,8 +77,8 @@ config.get
 
 .. note ::
 
-    | **timeMinuteOffset** は IotRetrieverFunction のデプロイ先AWSリージョンによって以下の値に設定されます:
-    | **timeMinuteOffset** is set to the following values depending on AWS region where IotRetrieverFunction is deployed:
+    | **timeMinuteOffset** は IotRetrieverFunction のデプロイ先AWSリージョンによって以下の初期値に設定されます:
+    | **timeMinuteOffset** is set to the following initial values depending on AWS region where IotRetrieverFunction is deployed:
 
     +----------------+--------------------------------+-------------------------------------------+------------+
     | Region         | timeMinuteOffset Default Value | City (Timezone Location)                  | UTC Offset |
@@ -87,7 +87,7 @@ config.get
     +----------------+--------------------------------+-------------------------------------------+------------+
     | ap-south-1     | 330                            | Mumbai (Asia/Kolkata)                     | UTC+5:30   |
     +----------------+--------------------------------+-------------------------------------------+------------+
-    | ap-southeast-2 | 330                            | Australia/Sydney                          | UTC+10     |
+    | ap-southeast-2 | 600                            | Australia/Sydney                          | UTC+10     |
     +----------------+--------------------------------+-------------------------------------------+------------+
     | eu-central-1   | 120                            | Frankfurt (Europe/Berlin)                 | UTC+2      |
     +----------------+--------------------------------+-------------------------------------------+------------+
