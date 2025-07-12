@@ -138,7 +138,7 @@ JavaScript
             console.log(`[${dateTime}] Temperature = ${data_sum.temperature_latest}`);
             console.log(`[${dateTime}] Humidity = ${data_sum.humidity_latest}`);
             console.log(`[${dateTime}] Wind speed = ${data_sum.wind_speed_latest}`);
-            console.log(`[${dateTime}] Wind gust Speed = ${data_sum.gust_speed_latest}`);
+            console.log(`[${dateTime}] Wind gust speed = ${data_sum.gust_speed_latest}`);
             console.log(`[${dateTime}] Wind direction = ${data_sum.wind_direction_latest}`);
             console.log(`[${dateTime}] Accumulation rainfall = ${data_sum.accumulation_rainfall_latest}`);
             console.log(`[${dateTime}] UV index = ${data_sum.uv_latest}`);
@@ -166,37 +166,92 @@ Python
 .. code-block:: python
 
     import json
-    import websocket
-    
-    ws_url = "<soshinkiWebIfWebSocketUrl>"
-    
-    def handle_event_data(data):
-        print("IoT Topic message: ", data)
-        #
-        # Some processes to handle the event data
-        #
-    
-    def on_message(ws, message):
-        print("WebSocket message: ", message)
-        message_obj = json.loads(message)
-        handle_event_data(message_obj['data'])
-    
-    def on_error(ws, error):
-        print("WebSocket error: " error)
-    
-    def on_close(ws, close_status_code, close_msg):
-        print("WebSocket is disconnected.")
-    
-    def on_open(ws):
-        print("WebSocket is connected.")    
-    
+    import asyncio
+    from datetime import datetime
+    import websockets
+    from typing import Any, Dict
+
+    class SoshinkiWebSocketClient:
+        def __init__(self, ws_url):
+            self.ws_url = ws_url
+            
+        async def connect(self):
+            async with websockets.connect(self.ws_url) as websocket:
+                print("WebSocket is connected.")
+                try:
+                    async for message in websocket:
+                        await self.on_message(message)
+                except websockets.exceptions.ConnectionClosed:
+                    print("WebSocket is disconnected.")
+                except Exception as e:
+                    print(f"WebSocket error: {e}")
+
+        @staticmethod
+        def to_local_date_time_string(timestamp):
+            date = datetime.fromtimestamp(timestamp / 1000)
+            return f"{date.year}/{date.month}/{date.day} {date.strftime('%H:%M:%S')}"
+
+        async def handle_event_data(self, data):
+            print("IoT Topic message: ", data)
+
+            message = data.get('message', {})
+            device_data_type = message.get('device_data_type')
+            data_sum = message.get('data_sum', {})
+            context = message.get('_context', {})
+            
+            if not context or not context.get('topic'):
+                return
+
+            iot_topic = context['topic'].split('/')
+            date_time = self.to_local_date_time_string(data_sum.get('timestamp', 0))
+
+            if 'noise' in iot_topic:
+                print(f"[{date_time}] Noise level = {data_sum.get('noise_latest')}")
+                #
+                # Some processes to visualize the noise measured data
+                #
+                
+            elif 'vibration' in iot_topic:
+                print(f"[{date_time}] Vibration level = {data_sum.get('vibration_latest')}")
+                #
+                # Some processes to visualize the vibration measured data
+                #
+                
+            elif 'weather' in iot_topic:
+                weather_metrics = [
+                    ('Temperature', 'temperature_latest'),
+                    ('Humidity', 'humidity_latest'),
+                    ('Wind speed', 'wind_speed_latest'),
+                    ('Wind gust speed', 'gust_speed_latest'),
+                    ('Wind direction', 'wind_direction_latest'),
+                    ('Accumulation rainfall', 'accumulation_rainfall_latest'),
+                    ('UV index', 'uv_latest'),
+                    ('Light illuminance', 'light_latest')
+                ]
+                
+                for label, metric in weather_metrics:
+                    print(f"[{date_time}] {label} = {data_sum.get(metric)}")
+                # 
+                # Some processes to visualize the weather measured data
+                #
+                
+            else:
+                print(f"Unimplemented event.device_data_type: {device_data_type}")
+
+        async def on_message(self, message):
+            print("WebSocket message: ", message)
+            try:
+                payload = json.loads(message)
+                await self.handle_event_data(payload)
+            except json.JSONDecodeError as e:
+                print(f"JSON parse error: {e}")
+            except Exception as e:
+                print(f"Message handling error: {e}")
+
+    async def main():
+        ws_url = "<soshinkiWebIfWebSocketUrl>"
+        client = SoshinkiWebSocketClient(ws_url)
+        await client.connect()
+
     if __name__ == "__main__":
-        ws = websocket.WebSocketApp(
-            ws_url,
-            on_message=on_message,
-            on_error=on_error,
-            on_close=on_close,
-            on_open=on_open,
-        )
-    
-        ws.run_forever()
+        asyncio.run(main())
