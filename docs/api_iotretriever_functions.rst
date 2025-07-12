@@ -65,7 +65,7 @@ config.get
     :statuscode 400: Illegal HTTP access (This request accepts :http:put:`/` only. The access was http.method != :http:method:`put` or http.path != '/')
     :statuscode 400: Invalid JSON payload
     :statuscode 401: Invalid API signature
-    :statuscode 500: Unable to handle the config.get request
+    :statuscode 500: Unable to handle the ``config.get`` request
 
     :>json string operation.configValues.timeMinuteOffset: | ローカル時刻のUTC時間に対する分単位差分（現在値）
                                                            | Minute offset of local time to UTC time, current setting
@@ -158,7 +158,7 @@ config.set
     :statuscode 400: Illegal HTTP access (This request accepts :http:put:`/` only. The access was http.method != :http:method:`put` or http.path != '/')
     :statuscode 400: Invalid JSON payload
     :statuscode 401: Invalid API signature
-    :statuscode 500: Unable to handle the config.set request
+    :statuscode 500: Unable to handle the ``config.set`` request
 
     :>json string configValues.timeMinuteOffset: | ローカル時刻のUTC時間に対する分単位差分（変更後の値）
                                                  | Minute offset of local time to UTC time, after the request was performed
@@ -217,11 +217,11 @@ parameter.get
                                 | (*) See `API Signature / HTTP API ( IotRetrieverFunction ) - questar-ac/aws_soshinki-backend <https://github.com/questar-ac/aws_soshinki-backend/blob/main/docs/WebInterface.md#api-signature>`_
 
     :<json string type: ``"parameter.get"``
-    :>json string operation.target.deviceId: | 端末ID
+    :<json string operation.target.deviceId: | 端末ID
                                              | Terminal ID
                                              | 本項目は省略可能、省略された場合は **Response JSON Object: parameters.sql.wherePhrase** に全端末を対象とするSQLクエリ文 ``WHERE`` 句が返される 
                                              | Can be omitted. If omitted, ``WHERE`` phrase of SQL query statement to all terminals will be returned with **Response JSON Object: parameters.sql.wherePhrase**.
-    :>json string operation.target.deviceType: | `Device Type <https://omoikane-fw.readthedocs.io/ja/latest/common_definition.html#device-type>`_
+    :<json string operation.target.deviceType: | `Device Type <https://omoikane-fw.readthedocs.io/ja/latest/common_definition.html#device-type>`_
 
     **Response Example**
 
@@ -242,8 +242,8 @@ parameter.get
             "databaseName": "soshinki_noise1_20250502",
             "tableName": "noise1_chunk",
             "sql": {
-            "fromPhrase": "FROM soshinki_noise1_20250502.noise1_chunk",
-            "wherePhrase": "WHERE measure_name = 'multi' AND device_id = 'SK000010'"
+              "fromPhrase": "FROM soshinki_noise1_20250502.noise1_chunk",
+              "wherePhrase": "WHERE measure_name = 'multi' AND device_id = 'SK000010'"
             }
           }
         }
@@ -264,8 +264,8 @@ parameter.get
             "databaseName": "soshinki_noise1_20250502",
             "tableName": "noise1_chunk",
             "sql": {
-            "fromPhrase": "FROM soshinki_noise1_20250502.noise1_chunk",
-            "wherePhrase": "WHERE measure_name = 'multi'"
+              "fromPhrase": "FROM soshinki_noise1_20250502.noise1_chunk",
+              "wherePhrase": "WHERE measure_name = 'multi'"
             }
           }
         }
@@ -276,15 +276,15 @@ parameter.get
     :statuscode 400: Illegal HTTP access (This request accepts :http:put:`/` only. The access was http.method != :http:method:`put` or http.path != '/')
     :statuscode 400: Invalid JSON payload
     :statuscode 401: Invalid API signature
-    :statuscode 500: Unable to handle the parameter.get request
+    :statuscode 500: Unable to handle the ``parameter.get`` request
 
     :>json string target.deviceId: | 端末ID（ **Request JSON Object: operation.target.deviceId** で指定した値と同一 ）
                                    | Terminal ID（ Same value as the one specified by **Request JSON Object: operation.target.deviceId** ）
     :>json string target.deviceType: | Device Type（ **Request JSON Object: operation.target.deviceType** で指定した値と同一 ）
     :>json string parameters.databaseName: | 対象計測データ格納されている Timestream DB のデータベース名
-                                           |  Database name of Timestream DB on which target measure data is stored
+                                           |  Database name of Timestream DB on which target measured data is stored
     :>json string parameters.tableName: | 対象計測データ格納されている Timestream DB のテーブル名
-                                        | Table name of Timestream DB on which target measure date is stored
+                                        | Table name of Timestream DB on which target measured date is stored
     :>json string parameters.sql.fromPhrase: | 対象計測データ格納されているTimestream DBに対するSQLクエリ文の ``FROM`` 句
                                              | ``FROM`` phrase of SQL query statement against target Timesteram DB
     :>json string parameters.sql.wherePhrase: | 対象計測データ格納されているTimestream DBに対するSQLクエリ文の ``WHERE`` 句
@@ -365,21 +365,21 @@ command.count
           - ``"Lp_count"``
           - 騒音計測データの個数
             
-            Number of noise measure data
+            Number of noise measured data
         * - **deviceType == "vibration1"** or **"vibration4"** の場合のみ指定可能な値
             
             Specifiable values in case of **deviceType == "vibration1"** or **"vibration4"**
           - ``"Lv_count"``
           - 振動計測データの個数
             
-            Number of vibration measure data
+            Number of vibration measured data
         * - **deviceType == "weather1"** の場合のみ指定可能な値
             
             Specifiable values in case of **deviceType == "weather1"**
           - ``"Wh_count"``
           - 気象計測データの個数
             
-            Number of weather measure data
+            Number of weather measured data
 
     **Response Example**
 
@@ -437,7 +437,7 @@ command.count
     :statuscode 400: Illegal HTTP access (This request accepts :http:put:`/` only. The access was http.method != :http:method:`put` or http.path != '/')
     :statuscode 400: Invalid JSON payload
     :statuscode 401: Invalid API signature
-    :statuscode 500: Unable to handle the command.count request
+    :statuscode 500: Unable to handle the ``command.count`` request
 
     :>json string target.deviceId: | 端末ID（ **Request JSON Object: operation.target.deviceId** で指定した値と同一 ）
                                    | Terminal ID（ Same value as the one specified by **Request JSON Object: operation.target.deviceId** ）
@@ -467,21 +467,21 @@ command.count
           - ``Lp_count``
           - 指定期間内の騒音計測データの個数
             
-            Number of noise measure data within the time period
+            Number of noise measured data within the time period
         * - **deviceType == "vibration1"** or **"vibration4"** の場合の戻り値
             
             Returned value in case of **deviceType == "vibration1"** or **"vibration4"**
           - ``Lv_count``
           - 指定期間内の振動計測データの個数
             
-            Number of vibration measure data within the time period
+            Number of vibration measured data within the time period
         * - **deviceType == "weather1"** の場合の戻り値
             
             Returned value in case of **deviceType == "weather1"**
           - ``Wh_count``
           - 指定期間内の気象計測データの個数
             
-            Number of weather measure data within the time period
+            Number of weather measured data within the time period
     :>json string sql.queryStatement: | リクエスト実行のために生成したSQLクエリ文文字列
                                       | String of SQL query statement to execute the request
                                       | **Request JSON Object: operation.parameters.sql.queryStatement** が ``false`` の場合、本項目は存在しない
@@ -698,7 +698,7 @@ command.aggregate
           - ``"Lv_count"``
           - 集計期間内の振動計測データの個数
             
-            Number of vibration measure data within the aggregate time period
+            Number of vibration measured data within the aggregate time period
         * - **deviceType == "weather1"** の場合のみ指定可能な値
             
             Specifiable values in case of **deviceType == "weather1"**
@@ -950,7 +950,7 @@ command.aggregate
           - ``"Wh_count"``
           - 集計期間内の気象計測データの個数
             
-            Number of weather measure data within the aggregate time period
+            Number of weather measured data within the aggregate time period
 
     **Response Example**
 
@@ -1051,7 +1051,7 @@ command.aggregate
     :statuscode 400: Illegal HTTP access (This request accept :http:put:`/` only. The access was http.method != :http:method:`put` or http.path != '/')
     :statuscode 400: Invalid JSON payload
     :statuscode 401: Invalid API signature
-    :statuscode 500: Unable to handle the command.aggregate request
+    :statuscode 500: Unable to handle the ``command.aggregate`` request
 
     :>json string target.deviceId: | 端末ID（ **Request JSON Object: operation.target.deviceId** で指定した値と同一 ）
                                    | Terminal ID（ Same value as the one specified by **Request JSON Object: operation.target.deviceId** ）
@@ -1151,7 +1151,7 @@ command.aggregate
           - ``Lp_count``
           - 集計期間内の騒音計測データの個数
             
-            Number of noise measure data within the aggregate time period
+            Number of noise measured data within the aggregate time period
         * - **deviceType == "vibration1"** or **"vibration4"** の場合の戻り値
             
             Returned value in case of **deviceType == "vibration1"** or **"vibration4"**
@@ -1228,7 +1228,7 @@ command.aggregate
           - ``Lv_count``
           - 集計期間内の振動計測データの個数
             
-            Number of vibration measure data within the aggregate time period
+            Number of vibration measured data within the aggregate time period
         * - **deviceType == "weather1"** の場合の戻り値
             
             Returned value in case of **deviceType == "weather1"**
@@ -1480,7 +1480,7 @@ command.aggregate
           - ``Wh_count``
           - 集計期間内の気象計測データの個数
             
-            Number of weather measure data within the aggregate time period
+            Number of weather measured data within the aggregate time period
     :>json string sql.queryStatement: | リクエスト実行のために生成したSQLクエリ文文字列
                                       | String of SQL query statement to execute the request
                                       | **Request JSON Object: operation.parameters.sql.queryStatement** が ``false`` の場合、本項目は存在しない
@@ -1716,7 +1716,7 @@ command.periodics
           - ``"Lv_count"``
           - 分割集計期間内の振動計測データの個数
             
-            Number of vibration measure data within the aggregate time period
+            Number of vibration measured data within the aggregate time period
         * - **deviceType == "weather1"** の場合のみ指定可能な値
             
             Specifiable values in case of **deviceType == "weather1"**
@@ -1975,7 +1975,7 @@ command.periodics
           - ``"Wh_count"``
           - 分割集計期間内の気象計測データの個数
             
-            Number of weather measure data within the aggregate time period
+            Number of weather measured data within the aggregate time period
 
     **Response Example**
 
@@ -2611,7 +2611,7 @@ command.periodics
     :statuscode 400: Illegal HTTP access (This request accepts :http:put:`/` only. The access was http.method != :http:method:`put` or http.path != '/')
     :statuscode 400: Invalid JSON payload
     :statuscode 401: Invalid API signature
-    :statuscode 500: Unable to handle the command.periodics request
+    :statuscode 500: Unable to handle the ``command.periodics`` request
 
     :>json string target.deviceId: | 端末ID（ **Request JSON Object: operation.target.deviceId** で指定した値と同一 ）
                                    | Terminal ID（ Same value as the one specified by **Request JSON Object: operation.target.deviceId** ）
@@ -2718,7 +2718,7 @@ command.periodics
           - ``Lp_count``
           - 分割集計期間内の騒音計測データの個数
             
-            Number of noise measure data within the aggregate time period
+            Number of noise measured data within the aggregate time period
         * - **deviceType == "vibration1"** or **"vibration4"** の場合の戻り値
             
             Returned value in case of **deviceType == "vibration1"** or **"vibration4"**
@@ -2802,7 +2802,7 @@ command.periodics
           - ``Lv_count``
           - 分割集計期間内の振動計測データの個数
             
-            Number of vibration measure data within the aggregate time period
+            Number of vibration measured data within the aggregate time period
         * - **deviceType == "weather1"** の場合の戻り値
             
             Returned value in case of **deviceType == "weather1"**
@@ -3061,7 +3061,7 @@ command.periodics
           - ``Wh_count``
           - 分割集計期間内の気象計測データの個数
             
-            Number of weather measure data within the aggregate time period
+            Number of weather measured data within the aggregate time period
     :>json string sql.queryStatement: | リクエスト実行のために生成したSQLクエリ文文字列
                                       | String of SQL query statement to execute the request
                                       | **Request JSON Object: operation.parameters.sql.queryStatement** が ``false`` の場合、本項目は存在しない
@@ -3298,7 +3298,7 @@ command.sqlExecute
     :statuscode 400: Illegal HTTP access (This request accepts :http:put:`/` only. The access was http.method != :http:method:`put` or http.path != '/')
     :statuscode 400: Invalid JSON payload
     :statuscode 401: Invalid API signature
-    :statuscode 500: Unable to handle the command.sqlExecute request
+    :statuscode 500: Unable to handle the ``command.sqlExecute`` request
 
     :>json string target.deviceId: | 端末ID（ **Request JSON Object: operation.target.deviceId** で指定した値と同一 ）
                                    | Terminal ID（ Same value as the one specified by **Request JSON Object: operation.target.deviceId** ）
